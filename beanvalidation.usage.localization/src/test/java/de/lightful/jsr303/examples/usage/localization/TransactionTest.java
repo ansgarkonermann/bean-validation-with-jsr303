@@ -15,8 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.lightful.jsr303.examples.basic;
+package de.lightful.jsr303.examples.usage.localization;
 
+import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -24,26 +25,37 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 @Test
-public class PersonTest {
+public class TransactionTest {
 
   private Validator validator;
 
+  private static Logger log = Logger.getLogger(TransactionTest.class);
+
   @BeforeMethod
   private void setUp() {
+    Locale.setDefault(Locale.ENGLISH);
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     validator = factory.getValidator();
   }
 
-  public void validationFailsForIncomeBelow2000() {
-    Person peter = new Person(1999);
-    Set<ConstraintViolation<Person>> violations = validator.validate(peter);
+  public void logViolationProperties() {
+    Transaction oneTwoThreePointSomething = new Transaction(new BigDecimal("123.45678"));
+
+    Set<ConstraintViolation<Transaction>> violations = validator.validate(oneTwoThreePointSomething);
 
     assertThat(violations.size()).as("Number of violations").isEqualTo(1);
-    ConstraintViolation<Person> violation = violations.iterator().next();
+    ConstraintViolation<Transaction> violation = violations.iterator().next();
+
+    log.info("Message Template: " + violation.getMessageTemplate());
+    log.info("Message: '" + violation.getMessage() + "'");
+    log.info("Invalid Value: " + violation.getInvalidValue());
+    log.info("Property Path: " + violation.getPropertyPath());
   }
 }

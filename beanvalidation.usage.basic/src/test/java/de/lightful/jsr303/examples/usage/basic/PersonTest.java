@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.lightful.jsr303.examples.basic;
+package de.lightful.jsr303.examples.usage.basic;
 
-import org.apache.log4j.Logger;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -34,28 +33,18 @@ public class PersonTest {
 
   private Validator validator;
 
-  private static Logger log = Logger.getLogger(PersonTest.class);
-
   @BeforeMethod
   private void setUp() {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     validator = factory.getValidator();
   }
 
-  public void logViolationProperties() {
+  public void validationFailsForIncomeBelow2000() {
     Person peter = new Person(1999);
     Set<ConstraintViolation<Person>> violations = validator.validate(peter);
 
     assertThat(violations.size()).as("Number of violations").isEqualTo(1);
     ConstraintViolation<Person> violation = violations.iterator().next();
-
-    log.info("Message Template: " + violation.getMessageTemplate());
-    log.info("Message: '" + violation.getMessage() + "'");
-    log.info("Invalid Value: " + violation.getInvalidValue());
-    log.info("Property Path: " + violation.getPropertyPath());
-
-    log.info("Peter: " + peter);
-    log.info("Root Bean: " + violation.getRootBean());
-    assertThat(violation.getRootBean()).as("Root Bean").isSameAs(peter);
+    assertThat(violation).as("Single violation").isNotNull();
   }
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.lightful.jsr303.examples.basic;
+package de.lightful.jsr303.examples.usage.basic;
 
 import javax.validation.constraints.Min;
 
